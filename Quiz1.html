@@ -1,0 +1,1324 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>منصة العقل في الأحياء | منصة الامتحانات</title>
+  
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- FontAwesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <!-- Google Fonts (Tajawal) -->
+  <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            brandGreen: '#10B981',
+            brandGreenDark: '#059669',
+            brandBlack: '#09090B',
+            brandDarkCard: '#18181B'
+          },
+          fontFamily: {
+            tajawal: ['Tajawal', 'sans-serif']
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    body {
+      font-family: 'Tajawal', sans-serif;
+      background-color: #09090B;
+      color: #FFFFFF;
+    }
+    
+    .dna-animation {
+      animation: pulseGlow 3s infinite alternate;
+    }
+    
+    @keyframes pulseGlow {
+      0% { filter: drop-shadow(0 0 5px rgba(16, 185, 129, 0.4)); transform: scale(1); }
+      100% { filter: drop-shadow(0 0 20px rgba(16, 185, 129, 0.8)); transform: scale(1.03); }
+    }
+
+    .custom-scrollbar::-webkit-scrollbar {
+      width: 6px;
+    }
+    .custom-scrollbar::-webkit-scrollbar-track {
+      background: #09090B;
+    }
+    .custom-scrollbar::-webkit-scrollbar-thumb {
+      background: #10B981;
+      border-radius: 10px;
+    }
+  </style>
+</head>
+<body class="min-h-screen flex flex-col justify-between selection:bg-brandGreen selection:text-black">
+
+  <!-- Header -->
+  <header class="border-b border-zinc-800 bg-black/80 backdrop-blur-md sticky top-0 z-40">
+    <div class="max-w-6xl mx-auto px-4 py-4 flex justify-between items-center">
+      <div class="flex items-center gap-3">
+        <div class="w-10 h-10 rounded-xl bg-brandGreen/10 border border-brandGreen/40 flex items-center justify-center text-brandGreen text-xl dna-animation">
+          <i class="fa-solid fa-dna"></i>
+        </div>
+        <div>
+          <h1 class="text-xl font-bold text-white tracking-wide">العقل في <span class="text-brandGreen">الأحياء</span></h1>
+          <p class="text-xs text-zinc-400">التفوق في الأحياء بطريقة ذكية</p>
+        </div>
+      </div>
+
+      <div class="flex items-center gap-3">
+        <span id="syncStatus" class="text-[10px] px-2.5 py-1 rounded-full bg-zinc-800 text-zinc-400 flex items-center gap-1.5">
+          <span class="w-2 h-2 rounded-full bg-amber-500 animate-pulse"></span> جاري الاتصال...
+        </span>
+        <button id="adminBtn" class="px-3 py-2 text-xs font-semibold rounded-lg border border-zinc-700 bg-zinc-900 hover:border-brandGreen hover:text-brandGreen transition">
+          <i class="fa-solid fa-user-shield ml-1"></i> لوحة التحكم
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Container -->
+  <main class="max-w-4xl mx-auto px-4 py-8 w-full flex-grow">
+
+    <!-- Step 1: Student Login / Registration -->
+    <section id="loginSection" class="bg-brandDarkCard border border-zinc-800 rounded-2xl p-6 md:p-10 shadow-2xl relative overflow-hidden">
+      <div class="absolute -top-24 -left-24 w-60 h-60 bg-brandGreen/10 rounded-full blur-3xl pointer-events-none"></div>
+
+      <div class="text-center max-w-xl mx-auto space-y-4">
+        <div class="w-16 h-16 mx-auto rounded-full bg-brandGreen/10 border border-brandGreen/30 flex items-center justify-center text-brandGreen text-3xl mb-2">
+          <i class="fa-solid fa-microscope"></i>
+        </div>
+        <h2 class="text-2xl md:text-3xl font-extrabold text-white">مرحباً بك في اختبار الأحياء</h2>
+        <p class="text-zinc-400 text-sm">يرجى كتابة اسمك وكود الامتحان لبدء الاختبار. سينطلق المؤقت فور الضغط على زر البداية.</p>
+
+        <!-- Error message container -->
+        <div id="loginError" class="hidden bg-red-950/50 border border-red-500 text-red-300 p-3 rounded-xl text-xs font-bold"></div>
+
+        <form id="startExamForm" class="space-y-4 pt-4">
+          <div class="text-right space-y-2">
+            <label class="text-xs text-zinc-300 font-semibold">اسم الطالب الرباعي</label>
+            <div class="relative">
+              <input type="text" id="studentNameInput" required placeholder="أدخل اسمك بالكامل..."
+                class="w-full bg-black border border-zinc-700 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-brandGreen transition pr-10">
+              <i class="fa-solid fa-user text-zinc-500 absolute left-3 top-1/2 -translate-y-1/2"></i>
+            </div>
+          </div>
+
+          <div class="text-right space-y-2">
+            <label class="text-xs text-zinc-300 font-semibold">كود الامتحان</label>
+            <div class="relative">
+              <input type="text" id="examCodeInput" dir="ltr" required placeholder="Bio-XXXXXX"
+                class="w-full bg-black border border-zinc-700 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-brandGreen transition pr-10 text-left font-mono">
+              <i class="fa-solid fa-key text-zinc-500 absolute left-3 top-1/2 -translate-y-1/2"></i>
+            </div>
+          </div>
+
+          <div class="bg-black/50 border border-zinc-800 rounded-xl p-4 flex justify-around text-xs text-zinc-400">
+            <div class="flex items-center gap-2">
+              <i class="fa-solid fa-clock text-brandGreen"></i>
+              <span>الزمن المحدد: <strong id="displayExamTime" class="text-white">--</strong> دقيقة</span>
+            </div>
+            <div class="flex items-center gap-2">
+              <i class="fa-solid fa-file-signature text-brandGreen"></i>
+              <span>عدد الأسئلة: <strong id="displayQuestionsCount" class="text-white">--</strong></span>
+            </div>
+          </div>
+
+          <button type="submit" class="w-full bg-brandGreen hover:bg-brandGreenDark text-black font-bold py-3 px-6 rounded-xl transition flex items-center justify-center gap-2 text-base shadow-lg shadow-brandGreen/20">
+            <i class="fa-solid fa-play"></i> ابدأ الاختبار الآن
+          </button>
+        </form>
+      </div>
+    </section>
+
+    <!-- Step 2: Exam Interface -->
+    <section id="examSection" class="hidden space-y-6">
+      <div class="bg-brandDarkCard border border-zinc-800 rounded-2xl p-4 flex flex-wrap justify-between items-center gap-4 sticky top-20 z-30 shadow-xl">
+        <div class="flex items-center gap-3">
+          <i class="fa-solid fa-user-graduate text-brandGreen"></i>
+          <div>
+            <div class="text-xs text-zinc-400">الطالب</div>
+            <div id="activeStudentName" class="text-sm font-bold text-white">--</div>
+          </div>
+        </div>
+
+        <div class="flex items-center gap-3 bg-black border border-brandGreen/40 px-4 py-2 rounded-xl">
+          <i class="fa-solid fa-stopwatch text-brandGreen animate-pulse"></i>
+          <span id="timerDisplay" class="text-lg font-mono font-bold text-brandGreen">00:00</span>
+        </div>
+      </div>
+
+      <form id="quizForm" class="space-y-6">
+        <div id="questionsContainer" class="space-y-6"></div>
+
+        <button type="submit" class="w-full bg-brandGreen hover:bg-brandGreenDark text-black font-extrabold py-4 rounded-xl transition text-lg shadow-xl shadow-brandGreen/20">
+          <i class="fa-solid fa-paper-plane ml-2"></i> إنهاء وتسليم الإجابات
+        </button>
+      </form>
+    </section>
+
+    <!-- Step 3: Results Section -->
+    <section id="resultSection" class="hidden bg-brandDarkCard border border-zinc-800 rounded-2xl p-8 text-center space-y-6">
+      <div class="w-20 h-20 mx-auto rounded-full bg-brandGreen/10 border-2 border-brandGreen flex items-center justify-center text-brandGreen text-4xl">
+        <i class="fa-solid fa-award"></i>
+      </div>
+      <div>
+        <h2 class="text-3xl font-extrabold text-white">تم تسليم الاختبار بنجاح!</h2>
+        <p class="text-zinc-400 mt-2">شكراً لك، تم إرسال نتيجتك وتفاصيل إجاباتك مباشرة إلى معلم المادة.</p>
+      </div>
+
+      <div class="bg-black border border-zinc-800 rounded-2xl p-6 max-w-sm mx-auto space-y-3">
+        <div class="text-xs text-zinc-400">درجتك التقديرية التلقائية</div>
+        <div class="text-4xl font-extrabold text-brandGreen" id="finalScoreDisplay">0 / 0</div>
+        <div class="text-xs text-zinc-500">* ملاحظة: الأسئلة المقالية تم تصحيحها تلقائياً بناءً على الكلمات المفتاحية.</div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Admin Modal -->
+  <div id="adminModal" class="fixed inset-0 bg-black/80 backdrop-blur-md hidden z-50 flex items-center justify-center p-2 md:p-4">
+    <div class="bg-brandDarkCard border border-zinc-800 rounded-2xl w-full max-w-4xl overflow-hidden flex flex-col max-h-[92vh]">
+      
+      <!-- Modal Header -->
+      <div class="p-4 border-b border-zinc-800 flex justify-between items-center bg-black">
+        <h3 class="text-base font-bold text-white flex items-center gap-2">
+          <i class="fa-solid fa-user-gear text-brandGreen"></i> لوحة الإدارة والتحكم في النتائج
+        </h3>
+        <button id="closeAdminModal" class="text-zinc-400 hover:text-white"><i class="fa-solid fa-xmark text-lg"></i></button>
+      </div>
+
+      <!-- Auth View -->
+      <div id="adminAuthView" class="p-6 space-y-4">
+        <div id="lockWarning" class="hidden bg-red-950/50 border border-red-500 text-red-300 p-4 rounded-xl text-xs text-center font-bold">
+          <i class="fa-solid fa-lock text-base mb-1 block"></i>
+          <span id="lockWarningText">تم حظرك مؤقتاً لكثرة المحاولات الخاطئة!</span>
+        </div>
+
+        <div id="loginFormContainer" class="space-y-4 max-w-md mx-auto py-6">
+          <p class="text-xs text-zinc-400 text-center">يرجى كتابة كلمة السر للوصول إلى لوحة نتائج الطلاب والإدارة:</p>
+          <input type="password" id="adminPasswordInput" dir="ltr" placeholder="أدخل كلمة المرور..." 
+            class="w-full bg-black border border-zinc-700 rounded-xl p-3 text-white focus:outline-none focus:border-brandGreen text-sm text-left font-mono">
+          <button id="loginAdminBtn" class="w-full bg-brandGreen hover:bg-brandGreenDark text-black font-bold py-2.5 rounded-xl transition text-sm">
+            دخول اللوحة
+          </button>
+        </div>
+      </div>
+
+      <!-- Admin Dashboard View -->
+      <div id="adminDashboardView" class="hidden flex flex-col flex-grow overflow-hidden">
+        
+        <!-- Navigation Tabs -->
+        <div class="flex border-b border-zinc-800 bg-zinc-950 px-4 pt-2 gap-2 text-xs font-bold overflow-x-auto">
+          <button id="tabResultsBtn" class="px-4 py-2.5 text-brandGreen border-b-2 border-brandGreen focus:outline-none flex items-center gap-2 shrink-0">
+            <i class="fa-solid fa-chart-line"></i> نتائج الطلاب والأوائل (<span id="resultsCountBadge">0</span>)
+          </button>
+          <button id="tabQuestionsBtn" class="px-4 py-2.5 text-zinc-400 hover:text-white border-b-2 border-transparent focus:outline-none flex items-center gap-2 shrink-0">
+            <i class="fa-solid fa-list-check"></i> إدارة الأسئلة
+          </button>
+          <button id="tabSettingsBtn" class="px-4 py-2.5 text-zinc-400 hover:text-white border-b-2 border-transparent focus:outline-none flex items-center gap-2 shrink-0">
+            <i class="fa-solid fa-sliders"></i> التحكم والدخول
+          </button>
+        </div>
+
+        <!-- Modal Body Content Container -->
+        <div class="p-4 md:p-6 overflow-y-auto custom-scrollbar flex-grow">
+          
+          <!-- TAB 1: Student Results Management -->
+          <div id="tabResultsContent" class="space-y-6">
+            
+            <!-- Quick Stats Bar -->
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+              <div class="bg-black p-3.5 rounded-xl border border-zinc-800 flex items-center justify-between">
+                <div>
+                  <div class="text-[11px] text-zinc-400">إجمالي المشاركين</div>
+                  <div id="statTotalStudents" class="text-xl font-bold text-white mt-0.5">0</div>
+                </div>
+                <div class="w-9 h-9 rounded-lg bg-blue-500/10 text-blue-400 flex items-center justify-center text-lg"><i class="fa-solid fa-users"></i></div>
+              </div>
+              <div class="bg-black p-3.5 rounded-xl border border-zinc-800 flex items-center justify-between">
+                <div>
+                  <div class="text-[11px] text-zinc-400">أعلى درجة مسجلة</div>
+                  <div id="statTopScore" class="text-xl font-bold text-brandGreen mt-0.5">0 / 0</div>
+                </div>
+                <div class="w-9 h-9 rounded-lg bg-brandGreen/10 text-brandGreen flex items-center justify-center text-lg"><i class="fa-solid fa-trophy"></i></div>
+              </div>
+              <div class="bg-black p-3.5 rounded-xl border border-zinc-800 flex items-center justify-between">
+                <div>
+                  <div class="text-[11px] text-zinc-400">متوسط الدرجات</div>
+                  <div id="statAvgScore" class="text-xl font-bold text-amber-400 mt-0.5">0%</div>
+                </div>
+                <div class="w-9 h-9 rounded-lg bg-amber-500/10 text-amber-400 flex items-center justify-center text-lg"><i class="fa-solid fa-chart-pie"></i></div>
+              </div>
+            </div>
+
+            <!-- Search & Actions Bar -->
+            <div class="flex flex-col sm:flex-row justify-between items-center gap-3 bg-black p-3 rounded-xl border border-zinc-800">
+              <div class="relative w-full sm:w-72">
+                <input type="text" id="searchStudentInput" placeholder="بحث باسم الطالب..." class="w-full bg-zinc-900 border border-zinc-700 rounded-lg pr-9 pl-3 py-1.5 text-xs text-white focus:outline-none focus:border-brandGreen">
+                <i class="fa-solid fa-magnifying-glass absolute right-3 top-1/2 -translate-y-1/2 text-zinc-500 text-xs"></i>
+              </div>
+              <button id="refreshResultsBtn" class="w-full sm:w-auto bg-zinc-800 hover:bg-zinc-700 text-zinc-200 px-3 py-1.5 rounded-lg text-xs font-bold transition flex items-center justify-center gap-1.5">
+                <i class="fa-solid fa-rotate"></i> تحديث القائمة
+              </button>
+            </div>
+
+            <!-- Results Table -->
+            <div class="overflow-x-auto border border-zinc-800 rounded-xl">
+              <table class="w-full text-right text-xs">
+                <thead class="bg-black border-b border-zinc-800 text-zinc-400 font-bold uppercase">
+                  <tr>
+                    <th class="p-3"># الترتيب</th>
+                    <th class="p-3">اسم الطالب</th>
+                    <th class="p-3 text-center">الدرجة</th>
+                    <th class="p-3 text-center">تاريخ التسليم</th>
+                    <th class="p-3 text-center">الإجراءات والتحكم</th>
+                  </tr>
+                </thead>
+                <tbody id="resultsTableBody" class="divide-y divide-zinc-800 text-zinc-300">
+                  <!-- Dynamic rows will be inserted here -->
+                </tbody>
+              </table>
+            </div>
+
+          </div>
+
+          <!-- TAB 2: Questions Management -->
+          <div id="tabQuestionsContent" class="hidden space-y-6">
+            <!-- Add Question Form -->
+            <div class="bg-black p-4 rounded-xl border border-zinc-800 space-y-4">
+              <h4 class="text-xs font-bold text-brandGreen uppercase tracking-wider">إضافة سؤال فردي جديد</h4>
+              
+              <div>
+                <label class="text-xs text-zinc-400">نوع السؤال</label>
+                <select id="qType" class="w-full bg-zinc-900 border border-zinc-700 rounded-lg p-2 text-sm text-white mt-1">
+                  <option value="mcq">اختيار من متعدد (MCQ)</option>
+                  <option value="essay">سؤال مقالي (يتطلب كلمات مفتاحية)</option>
+                </select>
+              </div>
+
+              <div>
+                <label class="text-xs text-zinc-400">نص السؤال</label>
+                <textarea id="qText" rows="2" placeholder="اكتب نص السؤال هنا..." class="w-full bg-zinc-900 border border-zinc-700 rounded-lg p-2 text-sm text-white mt-1"></textarea>
+              </div>
+
+              <!-- MCQ Fields -->
+              <div id="mcqFields" class="space-y-3">
+                <label class="text-xs text-zinc-400">الخيارات (حدد الدائرة بجانب الإجابة الصحيحة):</label>
+                <div class="space-y-2">
+                  <div class="flex items-center gap-2">
+                    <input type="radio" name="adminCorrectRadio" value="1" checked class="accent-brandGreen w-4 h-4 cursor-pointer">
+                    <input type="text" id="opt1" placeholder="الخيار الأول" class="w-full bg-zinc-900 border border-zinc-700 rounded-lg p-2 text-sm text-white">
+                  </div>
+                  <div class="flex items-center gap-2">
+                    <input type="radio" name="adminCorrectRadio" value="2" class="accent-brandGreen w-4 h-4 cursor-pointer">
+                    <input type="text" id="opt2" placeholder="الخيار الثاني" class="w-full bg-zinc-900 border border-zinc-700 rounded-lg p-2 text-sm text-white">
+                  </div>
+                  <div class="flex items-center gap-2">
+                    <input type="radio" name="adminCorrectRadio" value="3" class="accent-brandGreen w-4 h-4 cursor-pointer">
+                    <input type="text" id="opt3" placeholder="الخيار الثالث (اختياري)" class="w-full bg-zinc-900 border border-zinc-700 rounded-lg p-2 text-sm text-white">
+                  </div>
+                  <div class="flex items-center gap-2">
+                    <input type="radio" name="adminCorrectRadio" value="4" class="accent-brandGreen w-4 h-4 cursor-pointer">
+                    <input type="text" id="opt4" placeholder="الخيار الرابع (اختياري)" class="w-full bg-zinc-900 border border-zinc-700 rounded-lg p-2 text-sm text-white">
+                  </div>
+                </div>
+              </div>
+
+              <!-- Essay Keywords Fields -->
+              <div id="essayFields" class="hidden space-y-2">
+                <label class="text-xs text-zinc-400">الكلمات المفتاحية للإجابة (افصل بينها بفاصلة ,)</label>
+                <input type="text" id="essayKeywords" placeholder="مثال: البناء الضوئي, الكلوروفيل, الشمس" class="w-full bg-zinc-900 border border-zinc-700 rounded-lg p-2 text-sm text-white">
+              </div>
+
+              <button id="addQuestionBtn" class="w-full bg-brandGreen hover:bg-brandGreenDark text-black font-bold py-2.5 rounded-xl transition text-sm">
+                + إضافة السؤال وتحديث السحابة
+              </button>
+            </div>
+
+            <!-- JavaScript Questions Import -->
+            <div class="bg-black p-4 rounded-xl border border-brandGreen/40 space-y-3">
+              <div class="flex items-center justify-between">
+                <h4 class="text-xs font-bold text-brandGreen flex items-center gap-2">
+                  <i class="fa-brands fa-js text-base"></i> إضافة أسئلة كـ JavaScript Code
+                </h4>
+                <span class="text-[10px] text-zinc-500">دعم تنفيذ الكود المباشر والمصفوفات</span>
+              </div>
+              <textarea id="jsCodeImport" dir="ltr" rows="5" class="w-full bg-zinc-900 border border-zinc-800 rounded-lg p-3 text-xs font-mono text-green-400 text-left focus:outline-none focus:border-brandGreen" placeholder='[
+  { type: "mcq", text: "أين تتم عملية البناء الضوئي؟", options: ["الميتوكندريا", "البلاستيدات الخضراء", "النواة"], correct: 2 },
+  { type: "essay", text: "اشرح أهمية الكلوروفيل.", keywords: ["ضوء", "طاقة", "بناء ضوئي"] }
+]'></textarea>
+              <div class="flex gap-2">
+                <button id="importJsAppendBtn" class="w-1/2 bg-brandGreen hover:bg-brandGreenDark text-black font-bold py-2 rounded-lg text-xs transition">
+                  <i class="fa-solid fa-plus ml-1"></i> دمج مع الأسئلة الحالية
+                </button>
+                <button id="importJsReplaceBtn" class="w-1/2 bg-red-900/80 hover:bg-red-800 text-white font-bold py-2 rounded-lg text-xs transition">
+                  <i class="fa-solid fa-rotate ml-1"></i> استبدال كافة الأسئلة
+                </button>
+              </div>
+            </div>
+
+            <!-- Questions Preview List -->
+            <div class="space-y-2">
+              <h4 class="text-xs font-bold text-zinc-400">الأسئلة الحالية المرفوعة على السحابة (<span id="qCount">0</span>)</h4>
+              <div id="adminQuestionsList" class="space-y-2 max-h-40 overflow-y-auto custom-scrollbar"></div>
+            </div>
+
+            <!-- JSON Config Code -->
+            <div class="bg-black p-4 rounded-xl border border-zinc-800 space-y-2">
+              <h4 class="text-xs font-bold text-brandGreen">الأسئلة بصيغة JSON</h4>
+              <textarea id="jsonExport" dir="ltr" rows="3" class="w-full bg-zinc-900 border border-zinc-800 rounded-lg p-2 text-xs font-mono text-zinc-300 text-left"></textarea>
+              <button id="importJsonBtn" class="bg-zinc-800 hover:bg-zinc-700 text-xs text-white font-bold px-4 py-2 rounded-lg transition w-full">
+                تحديث الأسئلة من كود JSON
+              </button>
+            </div>
+          </div>
+
+          <!-- TAB 3: Access Control & General Settings -->
+          <div id="tabSettingsContent" class="hidden space-y-6">
+            <!-- Exam Access Control Section -->
+            <div class="bg-black p-4 rounded-xl border border-zinc-800 space-y-3">
+              <h4 class="text-xs font-bold text-brandGreen uppercase tracking-wider">التحكم في دخول الطلاب</h4>
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                <div>
+                  <label class="text-xs text-zinc-400">كود الامتحان الحالي</label>
+                  <div class="flex gap-2 mt-1">
+                    <input type="text" id="examCodeDisplay" dir="ltr" readonly class="w-full bg-zinc-900 border border-zinc-700 rounded-lg p-2 text-sm text-white font-mono text-left">
+                    <button id="copyExamCodeBtn" class="bg-zinc-800 hover:bg-zinc-700 text-xs text-white font-bold px-3 py-2 rounded-lg transition shrink-0">
+                      <i class="fa-solid fa-copy"></i>
+                    </button>
+                  </div>
+                </div>
+                <div class="flex items-end">
+                  <button id="generateNewCodeBtn" class="w-full bg-zinc-800 hover:bg-zinc-700 text-xs text-white font-bold py-2 rounded-lg transition">
+                    <i class="fa-solid fa-rotate mr-1"></i> توليد كود جديد
+                  </button>
+                </div>
+                <div class="md:col-span-2">
+                  <label class="text-xs text-zinc-400">أسماء الطلاب المسموح لهم (افصل بفاصلة , أو سطر جديد)</label>
+                  <textarea id="allowedStudentsInput" rows="2" placeholder="مثال: أحمد محمد، سارة علي، خالد يوسف" class="w-full bg-zinc-900 border border-zinc-700 rounded-lg p-2 text-sm text-white mt-1"></textarea>
+                  <p class="text-[10px] text-zinc-500 mt-1">اترك الحقل فارغاً للسماح لجميع الطلاب بالدخول.</p>
+                </div>
+              </div>
+              <button id="saveAccessControlBtn" class="bg-zinc-800 hover:bg-zinc-700 text-xs text-white font-bold px-4 py-2 rounded-lg transition">حفظ إعدادات الدخول والتزامن</button>
+            </div>
+
+            <!-- General Settings -->
+            <div class="bg-black p-4 rounded-xl border border-zinc-800 space-y-3">
+              <h4 class="text-xs font-bold text-brandGreen uppercase tracking-wider">إعدادات الامتحان والتلجرام وكلمة السر</h4>
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                <div>
+                  <label class="text-xs text-zinc-400">وقت الامتحان (بالدقائق)</label>
+                  <input type="text" id="settingTimeInput" placeholder="15" class="w-full bg-zinc-900 border border-zinc-700 rounded-lg p-2 text-sm text-white mt-1">
+                </div>
+                <div>
+                  <label class="text-xs text-zinc-400">كلمة مرور الأدمن الجديدة</label>
+                  <input type="password" id="settingPassInput" dir="ltr" placeholder="اتركه فارغاً للإبقاء الحالية" class="w-full bg-zinc-900 border border-zinc-700 rounded-lg p-2 text-sm text-white mt-1 font-mono text-left">
+                </div>
+                <div>
+                  <label class="text-xs text-zinc-400">Telegram Bot Token</label>
+                  <input type="text" id="settingTelegramToken" dir="ltr" placeholder="789000:AA..." class="w-full bg-zinc-900 border border-zinc-700 rounded-lg p-2 text-sm text-white mt-1 font-mono text-left">
+                </div>
+                <div>
+                  <label class="text-xs text-zinc-400">Telegram Chat ID</label>
+                  <input type="text" id="settingTelegramChatId" dir="ltr" placeholder="-100xxxxxx" class="w-full bg-zinc-900 border border-zinc-700 rounded-lg p-2 text-sm text-white mt-1 font-mono text-left">
+                </div>
+              </div>
+              <button id="saveSettingsBtn" class="bg-zinc-800 hover:bg-zinc-700 text-xs text-white font-bold px-4 py-2 rounded-lg transition">حفظ الإعدادات والتزامن</button>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- Student Detailed Answer Review Modal -->
+  <div id="studentDetailsModal" class="fixed inset-0 bg-black/90 backdrop-blur-md hidden z-50 flex items-center justify-center p-4">
+    <div class="bg-brandDarkCard border border-zinc-800 rounded-2xl w-full max-w-2xl overflow-hidden flex flex-col max-h-[85vh]">
+      <div class="p-4 border-b border-zinc-800 flex justify-between items-center bg-black">
+        <div>
+          <h3 id="modalStudentTitle" class="text-base font-bold text-white">تفاصيل إجابات الطالب</h3>
+          <p id="modalStudentSub" class="text-xs text-zinc-400">النتيجة: --</p>
+        </div>
+        <button id="closeStudentDetailsModal" class="text-zinc-400 hover:text-white"><i class="fa-solid fa-xmark text-lg"></i></button>
+      </div>
+
+      <div id="studentAnswersListContainer" class="p-4 space-y-4 overflow-y-auto custom-scrollbar flex-grow text-xs">
+        <!-- Questions Breakdown Dynamic Content -->
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer class="border-t border-zinc-800 py-4 text-center text-xs text-zinc-500">
+    جميع الحقوق محفوظة منصة <span class="text-brandGreen">العقل في الأحياء</span> &copy; 2026
+  </footer>
+
+  <!-- Firebase & App Script -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+    import { getDatabase, ref, push, set, onValue, update, remove } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
+
+    // Firebase Config
+    const firebaseConfig = {  
+      apiKey: "AIzaSyApg6stFboqgtQGqDbzgTwO7vKnIfphE_4",  
+      authDomain: "mindahyaa-e7dea.firebaseapp.com",  
+      databaseURL: "https://mindahyaa-e7dea-default-rtdb.firebaseio.com",  
+      projectId: "mindahyaa-e7dea",  
+      storageBucket: "mindahyaa-e7dea.firebasestorage.app",  
+      messagingSenderId: "33356546959",  
+      appId: "1:33356546959:web:43c406191ea2948b6381fa"
+    };  
+
+    let app, db;
+    const syncStatus = document.getElementById('syncStatus');
+
+    try {
+      app = initializeApp(firebaseConfig);
+      db = getDatabase(app);
+    } catch (e) {
+      console.warn("Firebase Init Warning:", e);
+    }
+
+    function generateExamCode() {
+      const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+      let code = 'Bio-';
+      for (let i = 0; i < 6; i++) {
+        code += chars.charAt(Math.floor(Math.random() * chars.length));
+      }
+      return code;
+    }
+
+    const defaultConfig = {
+      pass: "bio123",
+      timeLimit: 15,
+      telegramToken: "",
+      telegramChatId: "",
+      examCode: generateExamCode(),
+      allowedStudents: [],
+      questions: [
+        {
+          id: 1,
+          type: "mcq",
+          text: "أين تتم عملية البناء الضوئي في الخلية النباتية؟",
+          options: ["الميتوكندريا", "البلاستيدات الخضراء", "النواة", "جهاز جولجي"],
+          correct: 2
+        },
+        {
+          id: 2,
+          type: "essay",
+          text: "اشرح باختصار أهمية الكلوروفيل في النبات.",
+          keywords: ["امتصاص", "الضوء", "البناء الضوئي"]
+        }
+      ]
+    };
+
+    let config = JSON.parse(localStorage.getItem('quiz_config')) || defaultConfig;
+    let rawResultsData = {}; // Store all results from Firebase
+
+    function saveConfigCloud() {
+      localStorage.setItem('quiz_config', JSON.stringify(config));
+      if (db) {
+        set(ref(db, 'quiz_config'), config)
+          .then(() => {
+            syncStatus.innerHTML = `<span class="w-2 h-2 rounded-full bg-brandGreen"></span> متصل بالسحابة`;
+            syncStatus.className = "text-[10px] px-2.5 py-1 rounded-full bg-brandGreen/10 border border-brandGreen/30 text-brandGreen flex items-center gap-1.5";
+          })
+          .catch(err => {
+            console.error("Firebase Sync Error:", err);
+            syncStatus.innerHTML = `<span class="w-2 h-2 rounded-full bg-red-500"></span> خطأ بالتزامن`;
+          });
+      }
+    }
+
+    // Subscribe to Firebase Config & Results Realtime Sync
+    if (db) {
+      onValue(ref(db, 'quiz_config'), (snapshot) => {
+        if (snapshot.exists()) {
+          config = snapshot.val();
+          localStorage.setItem('quiz_config', JSON.stringify(config));
+          initUI();
+          if (!adminDashboardView.classList.contains('hidden')) {
+            renderAdminQuestionsList();
+          }
+          syncStatus.innerHTML = `<span class="w-2 h-2 rounded-full bg-brandGreen"></span> متصل بالسحابة`;
+          syncStatus.className = "text-[10px] px-2.5 py-1 rounded-full bg-brandGreen/10 border border-brandGreen/30 text-brandGreen flex items-center gap-1.5";
+        } else {
+          saveConfigCloud();
+        }
+      });
+
+      // Listen for Student Exam Results Realtime Updates
+      onValue(ref(db, 'exam_results'), (snapshot) => {
+        if (snapshot.exists()) {
+          rawResultsData = snapshot.val();
+        } else {
+          rawResultsData = {};
+        }
+        renderAdminResults();
+      });
+    }
+
+    function parseArabicInt(str) {
+      if (str === null || str === undefined) return NaN;
+      const arabicDigits = [/٠/g, /١/g, /٢/g, /٣/g, /٤/g, /٥/g, /٦/g, /٧/g, /٨/g, /٩/g];
+      let s = str.toString().trim();
+      for (let i = 0; i < 10; i++) {
+        s = s.replace(arabicDigits[i], i);
+      }
+      return parseInt(s, 10);
+    }
+
+    function normalizeArabic(text) {
+      if (!text) return '';
+      return text
+        .toString()
+        .toLowerCase()
+        .replace(/[\u064B-\u0652]/g, "")
+        .replace(/[أإآ]/g, "ا")
+        .replace(/ة/g, "ه")
+        .replace(/ى/g, "ي")
+        .trim();
+    }
+
+    function escapeHtml(text) {
+      if (!text) return '';
+      return text
+        .toString()
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;");
+    }
+
+    let timerInterval = null;
+    let timeRemaining = (config.timeLimit || 15) * 60;
+    let currentStudent = "";
+    let isExamSubmitted = false;
+    let failedAdminAttempts = 0;
+
+    // DOM Elements
+    const displayExamTime = document.getElementById('displayExamTime');
+    const displayQuestionsCount = document.getElementById('displayQuestionsCount');
+    const loginSection = document.getElementById('loginSection');
+    const examSection = document.getElementById('examSection');
+    const resultSection = document.getElementById('resultSection');
+    const startExamForm = document.getElementById('startExamForm');
+    const activeStudentName = document.getElementById('activeStudentName');
+    const timerDisplay = document.getElementById('timerDisplay');
+    const questionsContainer = document.getElementById('questionsContainer');
+    const quizForm = document.getElementById('quizForm');
+    const adminBtn = document.getElementById('adminBtn');
+    const adminModal = document.getElementById('adminModal');
+    const closeAdminModal = document.getElementById('closeAdminModal');
+    const adminAuthView = document.getElementById('adminAuthView');
+    const adminDashboardView = document.getElementById('adminDashboardView');
+    const lockWarning = document.getElementById('lockWarning');
+    const lockWarningText = document.getElementById('lockWarningText');
+    const loginFormContainer = document.getElementById('loginFormContainer');
+    const loginAdminBtn = document.getElementById('loginAdminBtn');
+    const adminPasswordInput = document.getElementById('adminPasswordInput');
+
+    const tabResultsBtn = document.getElementById('tabResultsBtn');
+    const tabQuestionsBtn = document.getElementById('tabQuestionsBtn');
+    const tabSettingsBtn = document.getElementById('tabSettingsBtn');
+    const tabResultsContent = document.getElementById('tabResultsContent');
+    const tabQuestionsContent = document.getElementById('tabQuestionsContent');
+    const tabSettingsContent = document.getElementById('tabSettingsContent');
+
+    const resultsTableBody = document.getElementById('resultsTableBody');
+    const searchStudentInput = document.getElementById('searchStudentInput');
+    const refreshResultsBtn = document.getElementById('refreshResultsBtn');
+    const studentDetailsModal = document.getElementById('studentDetailsModal');
+    const closeStudentDetailsModal = document.getElementById('closeStudentDetailsModal');
+    const studentAnswersListContainer = document.getElementById('studentAnswersListContainer');
+
+    const qType = document.getElementById('qType');
+    const mcqFields = document.getElementById('mcqFields');
+    const essayFields = document.getElementById('essayFields');
+    const addQuestionBtn = document.getElementById('addQuestionBtn');
+    const adminQuestionsList = document.getElementById('adminQuestionsList');
+    const jsonExport = document.getElementById('jsonExport');
+    const importJsonBtn = document.getElementById('importJsonBtn');
+
+    const jsCodeImport = document.getElementById('jsCodeImport');
+    const importJsAppendBtn = document.getElementById('importJsAppendBtn');
+    const importJsReplaceBtn = document.getElementById('importJsReplaceBtn');
+
+    const examCodeDisplay = document.getElementById('examCodeDisplay');
+    const copyExamCodeBtn = document.getElementById('copyExamCodeBtn');
+    const generateNewCodeBtn = document.getElementById('generateNewCodeBtn');
+    const allowedStudentsInput = document.getElementById('allowedStudentsInput');
+    const saveAccessControlBtn = document.getElementById('saveAccessControlBtn');
+    const examCodeInput = document.getElementById('examCodeInput');
+    const studentNameInput = document.getElementById('studentNameInput');
+    const loginError = document.getElementById('loginError');
+
+    // Sync UI with config data
+    function initUI() {
+      displayExamTime.textContent = config.timeLimit || 15;
+      displayQuestionsCount.textContent = (config.questions || []).length;
+      jsonExport.value = JSON.stringify(config.questions || [], null, 2);
+      
+      document.getElementById('settingTimeInput').value = config.timeLimit || 15;
+      document.getElementById('settingTelegramToken').value = config.telegramToken || "";
+      document.getElementById('settingTelegramChatId').value = config.telegramChatId || "";
+
+      examCodeDisplay.value = config.examCode || "";
+      allowedStudentsInput.value = (config.allowedStudents || []).join('، ');
+    }
+    initUI();
+
+    // Tab Navigation Switcher
+    function switchTab(tabName) {
+      tabResultsBtn.className = "px-4 py-2.5 border-b-2 focus:outline-none flex items-center gap-2 shrink-0 " + (tabName === 'results' ? 'text-brandGreen border-brandGreen' : 'text-zinc-400 hover:text-white border-transparent');
+      tabQuestionsBtn.className = "px-4 py-2.5 border-b-2 focus:outline-none flex items-center gap-2 shrink-0 " + (tabName === 'questions' ? 'text-brandGreen border-brandGreen' : 'text-zinc-400 hover:text-white border-transparent');
+      tabSettingsBtn.className = "px-4 py-2.5 border-b-2 focus:outline-none flex items-center gap-2 shrink-0 " + (tabName === 'settings' ? 'text-brandGreen border-brandGreen' : 'text-zinc-400 hover:text-white border-transparent');
+
+      tabResultsContent.classList.toggle('hidden', tabName !== 'results');
+      tabQuestionsContent.classList.toggle('hidden', tabName !== 'questions');
+      tabSettingsContent.classList.toggle('hidden', tabName !== 'settings');
+    }
+
+    tabResultsBtn.addEventListener('click', () => switchTab('results'));
+    tabQuestionsBtn.addEventListener('click', () => switchTab('questions'));
+    tabSettingsBtn.addEventListener('click', () => switchTab('settings'));
+
+    qType.addEventListener('change', (e) => {
+      if (e.target.value === 'mcq') {
+        mcqFields.classList.remove('hidden');
+        essayFields.classList.add('hidden');
+      } else {
+        mcqFields.classList.add('hidden');
+        essayFields.classList.remove('hidden');
+      }
+    });
+
+    startExamForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const enteredName = studentNameInput.value.trim();
+      const enteredCode = examCodeInput.value.trim().toUpperCase();
+      
+      loginError.classList.add('hidden');
+      loginError.textContent = '';
+
+      if (enteredCode !== (config.examCode || "").toUpperCase()) {
+        loginError.textContent = '❌ كود الامتحان غير صحيح. تأكد من الكود وأعد المحاولة.';
+        loginError.classList.remove('hidden');
+        return;
+      }
+
+      if (config.allowedStudents && config.allowedStudents.length > 0) {
+        const normEntered = normalizeArabic(enteredName);
+        const nameAllowed = config.allowedStudents.some(
+          name => normalizeArabic(name) === normEntered
+        );
+        if (!nameAllowed) {
+          loginError.textContent = '❌ اسمك غير موجود في قائمة الطلاب المسموح لهم بالدخول.';
+          loginError.classList.remove('hidden');
+          return;
+        }
+      }
+
+      currentStudent = enteredName;
+      activeStudentName.textContent = currentStudent;
+      loginSection.classList.add('hidden');
+      examSection.classList.remove('hidden');
+
+      renderQuestions();
+      startTimer();
+    });
+
+    function renderQuestions() {
+      questionsContainer.innerHTML = '';
+      (config.questions || []).forEach((q, index) => {
+        const qCard = document.createElement('div');
+        qCard.className = "bg-brandDarkCard border border-zinc-800 rounded-2xl p-6 space-y-4 shadow-lg";
+        
+        let content = `
+          <div class="flex items-start gap-3">
+            <span class="w-7 h-7 bg-brandGreen/20 text-brandGreen font-bold rounded-lg flex items-center justify-center text-sm shrink-0 mt-0.5">${index + 1}</span>
+            <div class="font-bold text-white text-base leading-relaxed">${q.text}</div>
+          </div>
+        `;
+
+        if (q.type === 'mcq') {
+          content += `<div class="grid grid-cols-1 md:grid-cols-2 gap-3 pt-2">`;
+          (q.options || []).forEach((opt, optIdx) => {
+            content += `
+              <label class="flex items-center gap-3 bg-black border border-zinc-800 p-3.5 rounded-xl cursor-pointer hover:border-brandGreen/50 transition">
+                <input type="radio" name="q_${q.id}" value="${optIdx + 1}" required class="accent-brandGreen">
+                <span class="text-sm text-zinc-300">${opt}</span>
+              </label>
+            `;
+          });
+          content += `</div>`;
+        } else if (q.type === 'essay') {
+          content += `
+            <div class="pt-2">
+              <textarea name="q_${q.id}" required rows="3" placeholder="اكتب إجابتك هنا بوضوح..." 
+                class="w-full bg-black border border-zinc-800 rounded-xl p-3 text-sm text-white focus:outline-none focus:border-brandGreen transition"></textarea>
+            </div>
+          `;
+        }
+
+        qCard.innerHTML = content;
+        questionsContainer.appendChild(qCard);
+      });
+    }
+
+    function startTimer() {
+      timeRemaining = (config.timeLimit || 15) * 60;
+      if (timerInterval) clearInterval(timerInterval);
+      
+      timerInterval = setInterval(() => {
+        timeRemaining--;
+        const mins = Math.floor(timeRemaining / 60);
+        const secs = timeRemaining % 60;
+        timerDisplay.textContent = `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+
+        if (timeRemaining <= 0) {
+          clearInterval(timerInterval);
+          alert('انتهى الوقت المحدد للاختبار! سيتم تسليم الإجابات تلقائياً.');
+          finishExam();
+        }
+      }, 1000);
+    }
+
+    quizForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+      finishExam();
+    });
+
+    async function finishExam() {
+      if (isExamSubmitted) return;
+      isExamSubmitted = true;
+      if (timerInterval) clearInterval(timerInterval);
+
+      const formData = new FormData(quizForm);
+      let score = 0;
+      let total = (config.questions || []).length;
+      let answersDetailedArray = [];
+      let telegramSummaryDetails = [];
+
+      (config.questions || []).forEach((q) => {
+        const userAns = formData.get(`q_${q.id}`);
+        let isCorrect = false;
+        let userText = "";
+        let correctText = "";
+
+        if (q.type === 'mcq') {
+          const selectedIdx = parseArabicInt(userAns);
+          if (selectedIdx === q.correct) {
+            score++;
+            isCorrect = true;
+          }
+          userText = (q.options && q.options[selectedIdx - 1]) ? q.options[selectedIdx - 1] : 'بلا إجابة';
+          correctText = (q.options && q.options[q.correct - 1]) ? q.options[q.correct - 1] : 'غير متاح';
+          
+          telegramSummaryDetails.push(`🔹 <b>سؤال:</b> ${escapeHtml(q.text)}\n- <b>إجابتك:</b> ${escapeHtml(userText)}\n- <b>الحالة:</b> ${isCorrect ? '✅ صحيحة' : '❌ خاطئة'}`);
+        } else if (q.type === 'essay') {
+          const normAns = normalizeArabic(userAns || "");
+          const matchedKeywords = (q.keywords || []).filter(kw => normAns.includes(normalizeArabic(kw)));
+          
+          if (matchedKeywords.length > 0) {
+            score++;
+            isCorrect = true;
+          }
+          userText = userAns || "لا يوجد إجابة";
+          correctText = "الكلمات المفتاحية المطلوبة: " + (q.keywords || []).join('، ');
+
+          telegramSummaryDetails.push(`📝 <b>سؤال مقالي:</b> ${escapeHtml(q.text)}\n- <b>إجابة الطالب:</b> ${escapeHtml(userText)}\n- <b>الكلمات المطابقة:</b> ${escapeHtml(matchedKeywords.join(', ')) || 'لا يوجد'}\n- <b>النتيجة:</b> ${isCorrect ? '✅ مقبول' : '❌ لم تستوف الكلمات المفتاحية'}`);
+        }
+
+        answersDetailedArray.push({
+          qId: q.id,
+          qText: q.text,
+          type: q.type,
+          userAnswer: userText,
+          correctAnswer: correctText,
+          isCorrect: isCorrect
+        });
+      });
+
+      examSection.classList.add('hidden');
+      resultSection.classList.remove('hidden');
+      document.getElementById('finalScoreDisplay').textContent = `${score} / ${total}`;
+
+      // Firebase Store Full Submission Details
+      if (db) {
+        try {
+          const resultsRef = ref(db, 'exam_results');
+          await push(resultsRef, {
+            studentName: currentStudent,
+            score: score,
+            totalScore: total,
+            timestamp: new Date().toISOString(),
+            answers: answersDetailedArray
+          });
+        } catch (err) {
+          console.error("Firebase Error:", err);
+        }
+      }
+
+      // Telegram Notification
+      if (config.telegramToken && config.telegramChatId) {
+        const message = `🧠 <b>إشعار نتيجة اختبار جديد - العقل في الأحياء</b>\n\n` +
+                        `👤 <b>اسم الطالب:</b> ${escapeHtml(currentStudent)}\n` +
+                        `📊 <b>النتيجة:</b> ${score} من ${total}\n` +
+                        `⏱️ <b>الزمن:</b> ${config.timeLimit} دقيقة\n\n` +
+                        `--- <b>تفاصيل الإجابات</b> ---\n\n` +
+                        telegramSummaryDetails.join('\n\n');
+
+        fetch(`https://api.telegram.org/bot${config.telegramToken}/sendMessage`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            chat_id: config.telegramChatId,
+            text: message,
+            parse_mode: 'HTML'
+          })
+        }).catch(err => console.error("Telegram Error:", err));
+      }
+    }
+
+    // RENDER ADMIN RESULTS & LEADERBOARD
+    function renderAdminResults() {
+      const resultsArray = Object.entries(rawResultsData).map(([key, val]) => ({
+        id: key,
+        ...val
+      }));
+
+      // Sort by score descending (Highest score first)
+      resultsArray.sort((a, b) => b.score - a.score);
+
+      // Stats Update
+      const totalStudents = resultsArray.length;
+      document.getElementById('statTotalStudents').textContent = totalStudents;
+      document.getElementById('resultsCountBadge').textContent = totalStudents;
+
+      if (totalStudents > 0) {
+        const topResult = resultsArray[0];
+        document.getElementById('statTopScore').textContent = `${topResult.score} / ${topResult.totalScore || '--'}`;
+        
+        const sumScores = resultsArray.reduce((acc, curr) => acc + (curr.score || 0), 0);
+        const sumTotals = resultsArray.reduce((acc, curr) => acc + (curr.totalScore || 1), 0);
+        const avgPercentage = Math.round((sumScores / sumTotals) * 100);
+        document.getElementById('statAvgScore').textContent = `${avgPercentage}%`;
+      } else {
+        document.getElementById('statTopScore').textContent = `0 / 0`;
+        document.getElementById('statAvgScore').textContent = `0%`;
+      }
+
+      // Table Filtering & Search
+      const searchQuery = normalizeArabic(searchStudentInput.value);
+      const filtered = resultsArray.filter(res => normalizeArabic(res.studentName).includes(searchQuery));
+
+      resultsTableBody.innerHTML = '';
+
+      if (filtered.length === 0) {
+        resultsTableBody.innerHTML = `<tr><td colspan="5" class="p-6 text-center text-zinc-500">لا توجد نتائج مسجلة حتى الآن.</td></tr>`;
+        return;
+      }
+
+      filtered.forEach((item, index) => {
+        const tr = document.createElement('tr');
+        tr.className = "hover:bg-zinc-900/50 transition";
+
+        let rankBadge = `<span class="font-bold text-zinc-400">${index + 1}</span>`;
+        if (index === 0) rankBadge = `<span class="px-2 py-0.5 rounded bg-amber-500/20 text-amber-400 font-extrabold text-[11px]"><i class="fa-solid fa-crown ml-1"></i> الأول</span>`;
+        else if (index === 1) rankBadge = `<span class="px-2 py-0.5 rounded bg-slate-300/20 text-slate-300 font-bold text-[11px]">الثاني</span>`;
+        else if (index === 2) rankBadge = `<span class="px-2 py-0.5 rounded bg-amber-700/20 text-amber-600 font-bold text-[11px]">الثالث</span>`;
+
+        const dateStr = item.timestamp ? new Date(item.timestamp).toLocaleString('ar-EG', { hour: '2-digit', minute: '2-digit', month: 'short', day: 'numeric' }) : '--';
+
+        tr.innerHTML = `
+          <td class="p-3 font-mono">${rankBadge}</td>
+          <td class="p-3 font-bold text-white">${escapeHtml(item.studentName)}</td>
+          <td class="p-3 text-center">
+            <span class="px-2.5 py-1 rounded-lg bg-brandGreen/10 border border-brandGreen/30 text-brandGreen font-extrabold font-mono text-xs">
+              ${item.score} / ${item.totalScore || '--'}
+            </span>
+          </td>
+          <td class="p-3 text-center text-zinc-500 font-mono text-[11px]">${dateStr}</td>
+          <td class="p-3 text-center">
+            <div class="flex items-center justify-center gap-1.5">
+              <button class="view-details-btn bg-zinc-800 hover:bg-zinc-700 text-brandGreen p-1.5 rounded-lg transition" title="عرض التفاصيل والإجابات" data-id="${item.id}">
+                <i class="fa-solid fa-eye"></i>
+              </button>
+              <button class="edit-score-btn bg-zinc-800 hover:bg-zinc-700 text-amber-400 p-1.5 rounded-lg transition" title="تعديل الدرجة" data-id="${item.id}" data-score="${item.score}">
+                <i class="fa-solid fa-pen"></i>
+              </button>
+              <button class="delete-result-btn bg-zinc-800 hover:bg-red-950 text-red-400 p-1.5 rounded-lg transition" title="حذف النتيجة" data-id="${item.id}">
+                <i class="fa-solid fa-trash"></i>
+              </button>
+            </div>
+          </td>
+        `;
+        resultsTableBody.appendChild(tr);
+      });
+
+      // Attach Event Listeners to Action Buttons
+      document.querySelectorAll('.view-details-btn').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+          const resId = e.currentTarget.getAttribute('data-id');
+          openStudentDetails(resId);
+        });
+      });
+
+      document.querySelectorAll('.edit-score-btn').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+          const resId = e.currentTarget.getAttribute('data-id');
+          const oldScore = e.currentTarget.getAttribute('data-score');
+          editStudentScore(resId, oldScore);
+        });
+      });
+
+      document.querySelectorAll('.delete-result-btn').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+          const resId = e.currentTarget.getAttribute('data-id');
+          deleteStudentResult(resId);
+        });
+      });
+    }
+
+    searchStudentInput.addEventListener('input', renderAdminResults);
+    refreshResultsBtn.addEventListener('click', renderAdminResults);
+
+    // Show Detailed Question Breakdown for a Selected Student
+    function openStudentDetails(resId) {
+      const studentData = rawResultsData[resId];
+      if (!studentData) return;
+
+      document.getElementById('modalStudentTitle').textContent = `إجابات الطالب: ${studentData.studentName}`;
+      document.getElementById('modalStudentSub').textContent = `الدرجة العامة: ${studentData.score} / ${studentData.totalScore || '--'}`;
+
+      studentAnswersListContainer.innerHTML = '';
+
+      if (!studentData.answers || studentData.answers.length === 0) {
+        studentAnswersListContainer.innerHTML = `<p class="text-zinc-500 text-center py-6">لا تتوفر تفاصيل إجابات دقيقة لهام التقديم (نموذج قديم).</p>`;
+      } else {
+        studentData.answers.forEach((ans, idx) => {
+          const div = document.createElement('div');
+          const isOk = ans.isCorrect;
+          div.className = `p-4 rounded-xl border space-y-2 ${isOk ? 'bg-emerald-950/20 border-emerald-500/40' : 'bg-red-950/20 border-red-500/40'}`;
+          
+          div.innerHTML = `
+            <div class="flex items-start justify-between gap-2">
+              <span class="font-bold text-white">${idx + 1}. ${escapeHtml(ans.qText)}</span>
+              <span class="px-2 py-0.5 rounded text-[10px] font-bold shrink-0 ${isOk ? 'bg-emerald-500/20 text-emerald-400' : 'bg-red-500/20 text-red-400'}">
+                ${isOk ? '✅ إجابة صحيحة' : '❌ إجابة خاطئة'}
+              </span>
+            </div>
+            <div class="text-zinc-300 pt-1 space-y-1">
+              <div><strong class="text-zinc-400">إجابة الطالب:</strong> <span class="${isOk ? 'text-emerald-300' : 'text-red-300'} font-semibold">${escapeHtml(ans.userAnswer)}</span></div>
+              ${!isOk ? `<div class="text-zinc-400"><strong>الإجابة النموذجية:</strong> ${escapeHtml(ans.correctAnswer)}</div>` : ''}
+            </div>
+          `;
+          studentAnswersListContainer.appendChild(div);
+        });
+      }
+
+      studentDetailsModal.classList.remove('hidden');
+    }
+
+    closeStudentDetailsModal.addEventListener('click', () => {
+      studentDetailsModal.classList.add('hidden');
+    });
+
+    // Edit Student Score
+    function editStudentScore(resId, currentScore) {
+      const newScoreStr = prompt(`أدخل الدرجة الجديدة للطالب (الدرجة الحالية: ${currentScore}):`, currentScore);
+      if (newScoreStr === null) return;
+      
+      const newScore = parseArabicInt(newScoreStr);
+      if (isNaN(newScore) || newScore < 0) {
+        alert('يرجى إدخال رقم صحيح للدرجة!');
+        return;
+      }
+
+      if (db) {
+        update(ref(db, `exam_results/${resId}`), { score: newScore })
+          .then(() => alert('تم تعديل الدرجة بنجاح والتحديث على السحابة!'))
+          .catch(err => alert('حدث خطأ أثناء تعديل الدرجة: ' + err.message));
+      }
+    }
+
+    // Delete Student Result
+    function deleteStudentResult(resId) {
+      if (confirm('هل أنت تأكد من رغبتك في حذف نتيجة هذا الطالب نهائياً؟')) {
+        if (db) {
+          remove(ref(db, `exam_results/${resId}`))
+            .then(() => alert('تم حذف النتيجة بنجاح!'))
+            .catch(err => alert('حدث خطأ أثناء الحذف: ' + err.message));
+        }
+      }
+    }
+
+    // Admin Access Modal Logic
+    adminBtn.addEventListener('click', () => {
+      adminModal.classList.remove('hidden');
+      checkAdminLockout();
+    });
+
+    closeAdminModal.addEventListener('click', () => {
+      adminModal.classList.add('hidden');
+    });
+
+    function checkAdminLockout() {
+      const lockUntil = localStorage.getItem('admin_lock_until');
+      if (lockUntil && Date.now() < parseInt(lockUntil)) {
+        const remainingSecs = Math.ceil((parseInt(lockUntil) - Date.now()) / 1000);
+        lockWarningText.textContent = `تم حظرك مؤقتاً لكثرة المحاولات الخاطئة. حاول بعد ${remainingSecs} ثانية.`;
+        lockWarning.classList.remove('hidden');
+        loginFormContainer.classList.add('hidden');
+      } else {
+        localStorage.removeItem('admin_lock_until');
+        lockWarning.classList.add('hidden');
+        loginFormContainer.classList.remove('hidden');
+      }
+    }
+
+    loginAdminBtn.addEventListener('click', () => {
+      const enteredPass = adminPasswordInput.value.trim();
+      if (enteredPass === config.pass) {
+        failedAdminAttempts = 0;
+        adminAuthView.classList.add('hidden');
+        adminDashboardView.classList.remove('hidden');
+        renderAdminQuestionsList();
+        renderAdminResults();
+        initUI();
+      } else {
+        failedAdminAttempts++;
+        if (failedAdminAttempts >= 3) {
+          const lockTime = Date.now() + 60000;
+          localStorage.setItem('admin_lock_until', lockTime.toString());
+          checkAdminLockout();
+        } else {
+          alert(`كلمة المرور خاطئة! المتبقي ${3 - failedAdminAttempts} محاولات.`);
+        }
+      }
+    });
+
+    saveAccessControlBtn.addEventListener('click', () => {
+      const newCode = examCodeDisplay.value.trim().toUpperCase();
+      if (!newCode.startsWith('BIO-') || newCode.length < 5) {
+        alert('كود الامتحان يجب أن يبدأ بـ Bio- ويحتوي على أحرف وأرقام.');
+        return;
+      }
+      config.examCode = newCode;
+      config.allowedStudents = allowedStudentsInput.value
+        .split(/[,،\n]/)
+        .map(name => name.trim())
+        .filter(name => name.length > 0);
+
+      saveConfigCloud();
+      initUI();
+      alert('تم حفظ الإعدادات وتحديثها أونلاين عبر السحابة!');
+    });
+
+    generateNewCodeBtn.addEventListener('click', () => {
+      examCodeDisplay.value = generateExamCode();
+    });
+
+    copyExamCodeBtn.addEventListener('click', () => {
+      const textToCopy = examCodeDisplay.value;
+      if (navigator.clipboard && window.isSecureContext) {
+        navigator.clipboard.writeText(textToCopy).then(() => alert('تم نسخ الكود!'));
+      } else {
+        examCodeDisplay.select();
+        document.execCommand('copy');
+        alert('تم نسخ الكود!');
+      }
+    });
+
+    document.getElementById('saveSettingsBtn').addEventListener('click', () => {
+      const timeVal = parseArabicInt(document.getElementById('settingTimeInput').value);
+      if (isNaN(timeVal) || timeVal <= 0) {
+        alert('يرجى كتابة عدد دقائق صحيح لوقت الامتحان!');
+        return;
+      }
+      config.timeLimit = timeVal;
+      config.telegramToken = document.getElementById('settingTelegramToken').value.trim();
+      config.telegramChatId = document.getElementById('settingTelegramChatId').value.trim();
+      
+      const newPass = document.getElementById('settingPassInput').value.trim();
+      if (newPass.length > 0) {
+        config.pass = newPass;
+        document.getElementById('settingPassInput').value = '';
+      }
+
+      saveConfigCloud();
+      initUI();
+      alert('تم حفظ التعديلات ونشرها للسحابة بنجاح!');
+    });
+
+    addQuestionBtn.addEventListener('click', () => {
+      const text = document.getElementById('qText').value.trim();
+      const type = qType.value;
+
+      if (!text) {
+        alert('يرجى كتابة نص السؤال');
+        return;
+      }
+
+      let newQ = { id: Date.now(), type, text };
+
+      if (type === 'mcq') {
+        const o1 = document.getElementById('opt1').value.trim();
+        const o2 = document.getElementById('opt2').value.trim();
+        const o3 = document.getElementById('opt3').value.trim();
+        const o4 = document.getElementById('opt4').value.trim();
+
+        const rawOpts = [o1, o2, o3, o4];
+        const selectedRadio = document.querySelector('input[name="adminCorrectRadio"]:checked');
+        const selectedRadioVal = selectedRadio ? parseInt(selectedRadio.value) : 1;
+
+        if (!rawOpts[selectedRadioVal - 1]) {
+          alert('لقد حددت إجابة صحيحة لخيار فارغ!');
+          return;
+        }
+
+        let optionsArr = [];
+        let correctIdx = 1;
+
+        rawOpts.forEach((optStr, idx) => {
+          if (optStr.length > 0) {
+            optionsArr.push(optStr);
+            if ((idx + 1) === selectedRadioVal) {
+              correctIdx = optionsArr.length;
+            }
+          }
+        });
+
+        if (optionsArr.length < 2) {
+          alert('يرجى إضافة خيارين على الأقل!');
+          return;
+        }
+
+        newQ.options = optionsArr;
+        newQ.correct = correctIdx;
+      } else {
+        const kws = document.getElementById('essayKeywords').value.split(/[,،]/).map(k => k.trim()).filter(Boolean);
+        if (kws.length === 0) {
+          alert('يرجى إضافة كلمة مفتاحية واحدة على الأقل!');
+          return;
+        }
+        newQ.keywords = kws;
+      }
+
+      config.questions.push(newQ);
+      saveConfigCloud();
+      
+      document.getElementById('qText').value = '';
+      document.getElementById('opt1').value = '';
+      document.getElementById('opt2').value = '';
+      document.getElementById('opt3').value = '';
+      document.getElementById('opt4').value = '';
+      document.getElementById('essayKeywords').value = '';
+      
+      renderAdminQuestionsList();
+      initUI();
+    });
+
+    function processJsQuestionsImport(shouldReplace = false) {
+      const codeText = jsCodeImport.value.trim();
+      if (!codeText) {
+        alert('يرجى لصق كود JS أو مصفوفة الأسئلة أولاً!');
+        return;
+      }
+
+      try {
+        let extractedQuestions = null;
+
+        if (codeText.startsWith('[') || codeText.startsWith('{')) {
+          extractedQuestions = new Function(`return (${codeText});`)();
+        } else {
+          extractedQuestions = new Function(`${codeText}\n if (typeof questions !== 'undefined') return questions; return [];`)();
+        }
+
+        if (!Array.isArray(extractedQuestions) || extractedQuestions.length === 0) {
+          throw new Error('لم يتم العثور على مصفوفة (Array) أسئلة صالحة في الكود.');
+        }
+
+        const formattedNewQuestions = extractedQuestions.map((q, idx) => ({
+          id: q.id || (Date.now() + idx),
+          type: q.type || 'mcq',
+          text: q.text || 'سؤال جديد',
+          options: q.options || [],
+          correct: parseArabicInt(q.correct) || 1,
+          keywords: q.keywords || []
+        }));
+
+        if (shouldReplace) {
+          config.questions = formattedNewQuestions;
+        } else {
+          config.questions = [...(config.questions || []), ...formattedNewQuestions];
+        }
+
+        saveConfigCloud();
+        renderAdminQuestionsList();
+        initUI();
+        alert(`تم نجاح إدخال ${formattedNewQuestions.length} سؤال عبر كود JS وتزامنهم أونلاين!`);
+      } catch (err) {
+        alert('❌ حدث خطأ أثناء تنفيذ كود JS:\n' + err.message);
+      }
+    }
+
+    importJsAppendBtn.addEventListener('click', () => processJsQuestionsImport(false));
+    importJsReplaceBtn.addEventListener('click', () => processJsQuestionsImport(true));
+
+    importJsonBtn.addEventListener('click', () => {
+      try {
+        const parsed = JSON.parse(jsonExport.value);
+        if (!Array.isArray(parsed)) throw new Error("يجب أن تكون البيانات قائمة أسئلة (Array)");
+        config.questions = parsed;
+        saveConfigCloud();
+        renderAdminQuestionsList();
+        initUI();
+        alert('تم تحديث قائمة الأسئلة بنجاح في السحابة!');
+      } catch (e) {
+        alert('خطأ في صيغة الـ JSON: ' + e.message);
+      }
+    });
+
+    function renderAdminQuestionsList() {
+      document.getElementById('qCount').textContent = (config.questions || []).length;
+      adminQuestionsList.innerHTML = '';
+
+      (config.questions || []).forEach((q, i) => {
+        const div = document.createElement('div');
+        div.className = "bg-zinc-900 p-3 rounded-lg border border-zinc-800 flex justify-between items-center text-xs";
+        div.innerHTML = `
+          <div class="truncate max-w-[80%]">
+            <span class="text-brandGreen font-bold">[${q.type.toUpperCase()}]</span>
+            <span class="text-white mr-2">${q.text}</span>
+          </div>
+          <button class="text-red-400 hover:text-red-300 delete-q-btn p-1" data-index="${i}">
+            <i class="fa-solid fa-trash"></i>
+          </button>
+        `;
+        adminQuestionsList.appendChild(div);
+      });
+
+      document.querySelectorAll('.delete-q-btn').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+          const idx = e.currentTarget.getAttribute('data-index');
+          config.questions.splice(idx, 1);
+          saveConfigCloud();
+          renderAdminQuestionsList();
+          initUI();
+        });
+      });
+    }
+  </script>
+</body>
+</html>
